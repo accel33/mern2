@@ -3,11 +3,12 @@ const app = express();
 const path = require("path");
 const PORT = process.env.PORT || 3000;
 
-const ruta = path.join(__dirname, "/public");
+const ruta = path.join(__dirname, "public");
+const rutaRoot = path.join(__dirname, 'routes', 'raiz')
 const ruta404 = path.join(__dirname, "views", "404.html");
 
 app.use("/", express.static(ruta));
-app.use("/", require("./routes/root"));
+app.use("/", require("./routes/raiz"));
 console.log(ruta404);
 app.all("*", (req, res) => {
   res.status(404);
