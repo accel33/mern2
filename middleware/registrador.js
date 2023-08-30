@@ -9,7 +9,6 @@ const registrarEventos = async (mensaje, nombreDeArchivo) => {
 
     // Dentro del mensaje vamos a poner: Fecha, ID, Mensaje
     const mensajeDeRegistro = `${fecha}\t${uuid()}\t${mensaje}\n`;
-
     const carpetaDeRegistros = path.join(__dirname, '..', 'logs');
     const archivoDeRegistro = path.join(carpetaDeRegistros, nombreDeArchivo);
 
@@ -24,11 +23,11 @@ const registrarEventos = async (mensaje, nombreDeArchivo) => {
 };
 
 //TODO buscar solo loguear solicitudes especificas, buscar minimizar la cantidad de logs en el futuro
-const logger = (req, res, next) => {
+const registrador = (req, res, next) => {
     const mensaje = `${req.method}\t${req.url}\t${req.headers.origin}`;
 
     registrarEventos(mensaje, 'reqLog.log');
     next();
 };
 
-module.exports = { registrarEventos, logger };
+module.exports = { registrarEventos, registrador };
