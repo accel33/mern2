@@ -1,26 +1,29 @@
-const express = require("express");
+const express = require('express');
 const app = express();
-const path = require("path");
+const path = require('path');
 const PORT = process.env.PORT || 3000;
+const raiz = require('./routes/raiz');
+const { logger } = require('./config/registrador');
 
-const ruta = path.join(__dirname, "public");
-const rutaRoot = path.join(__dirname, 'routes', 'raiz')
-const ruta404 = path.join(__dirname, "views", "404.html");
+const ruta = path.join(__dirname, 'public');
+const rutaRoot = path.join(__dirname, 'routes', 'raiz');
+const ruta404 = path.join(__dirname, 'views', '404.html');
 
-app.use("/", express.static(ruta));
-app.use("/", require("./routes/raiz"));
+app.use('/', express.static(ruta));
+app.use(logger);
+app.use('/', require(rutaRoot));
 console.log(ruta404);
-app.all("*", (req, res) => {
-  res.status(404);
-  if (req.accepts("html")) {
-    res.sendFile(ruta404);
-  } else if (req.accepts("json")) {
-    res.json({ message: "404 No Encontraado" });
-  } else {
-    res.type("txt").send("404 No Encontrado");
-  }
+app.all('*', (req, res) => {
+    res.status(404);
+    if (req.accepts('html')) {
+        res.sendFile(ruta404);
+    } else if (req.accepts('json')) {
+        res.json({ message: '404 No Encontraado' });
+    } else {
+        res.type('txt').send('404 No Encontrado');
+    }
 });
 
 app.listen(PORT, () => {
-  console.log(`Escuchando en el puerto ${PORT}`);
+    console.log(`Escuchando en el puerto ${PORT}`);
 });
