@@ -1,11 +1,12 @@
 const origenesPermitidos = require('./origenesPermitidos');
 
+// CORS, Recursos Compartidos de Origen Multiples
 const opcionesCors = {
-    origin: (origin, callback) => {
-        if (origenesPermitidos.indexOf(origin) !== -1 || !origin) {
-            callback(null, true);
+    origin: (origen, funcionParaLlamarLuego) => {
+        if (origenesPermitidos.indexOf(origen) !== -1 || !origen) {
+            funcionParaLlamarLuego(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            funcionParaLlamarLuego(new Error('No permitido por CORS'));
         }
     },
     credentials: true,
