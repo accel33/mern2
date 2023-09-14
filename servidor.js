@@ -1,19 +1,25 @@
+require('dotenv').config();
+
 // Importaciones de Terceros
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
 
 // Importaciones de Node.js
 const path = require('path');
 
 // Importaciones Locales Personales
-const raiz = require('./routes/raiz');
-const { registrador } = require('./middleware/registrador');
-const manejadorDeErrores = require('./middleware/manejadorDeErrores');
+const paginaPrincipal = require('./routes/raiz');
 const opcionesCors = require('./config/opcionesCors');
+const conectarBaseDeDatos = require('./config/conexionBD');
+const { registrador, registrarEventos } = require('./middleware/registrador');
+const manejadorDeErrores = require('./middleware/manejadorDeErrores');
 
 const PORT = process.env.PORT || 3000;
+console.log(`Entorno: ${process.env.NODE_ENV}`);
+conectarBaseDeDatos();
 
 const rutaEstatica = path.join(__dirname, 'public');
 const rutaRaiz = path.join(__dirname, 'routes', 'raiz');
@@ -38,9 +44,18 @@ app.all('*', (req, res) => {
         res.type('txt').send('404 No Encontrado');
     }
 });
-console.log(manejadorDeErrores);
+
 app.use(manejadorDeErrores);
 
-app.listen(PORT, () => {
-    console.log(`Escuchando en el puerto ${PORT}`);
+mongoose.connection.once('open', () => {
+    console.log('Conectado a MongoDB');
+    app.listen(PORT, () => console.log(`Escuchando en el puerto ${PORT}`));
+});
+
+mongoose.connection.on('error', (err) => {
+    console.log(err);
+    registrarEventos(
+        `${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`,
+        'mongoErrLog.log'
+    );
 });
