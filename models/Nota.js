@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
+const AutoIncremento = require('mongoose-sequence')(mongoose);
 
 const notaEsquema = new mongoose.Schema(
     {
         usuario: {
             //Hacemos referencia al usuario, porque Notas pertenece a un Usuario
             //Un Usuario puede tener multiples Notas... | Uno a Muchos |
-            type: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'Usuario',
         },
@@ -28,10 +28,12 @@ const notaEsquema = new mongoose.Schema(
     }
 );
 
-notaEsquema.plugin(AutoIncrement, {
+const opcionesParaSecuencia = {
     inc_field: 'ticket',
     id: 'numerosTicket',
     start_seq: 500,
-});
+};
+
+notaEsquema.plugin(AutoIncremento, opcionesParaSecuencia);
 
 module.exports = mongoose.Model('Nota', notaEsquema);
