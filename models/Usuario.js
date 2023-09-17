@@ -12,13 +12,13 @@ const usuarioEsquema = new mongoose.Schema({
     roles: [
         {
             type: String,
-            required: true,
+            default: 'Empleado',
         },
     ],
     activos: {
         type: Boolean,
-        required: true,
+        default: true,
     },
 });
 
-module.exports = mongoose.Model('Usuario', usuarioEsquema);
+module.exports = mongoose.model('Usuario', usuarioEsquema);
