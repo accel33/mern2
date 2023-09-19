@@ -80,5 +80,19 @@ const actualizarUsuario = asyncHandler(async (req, res) => {
 // @desc Borrar un Usuario
 // @ruta DELETE /usuarios/:id
 // @acceso Privado
+const borrarUsuario = asyncHandler(async (req, res) => {
+    const { id } = req.body
+    if (!id) {
+        return res.status(400).json({ message: 'ID del Usuario es requerido' })
+    }
+    // El usuario existe para poder ser borrado?
+    const usuario = await Usuario.findById(id).exec()
+    if (!usuario) {
+        return res.status(400).json({ message: 'Usuario no encontrado' })
+    }
+    const resultado = await usuario.deleteOne()
+    const respuesta = `Nombre del usuario ${result.username} con el ID ${result._id} borrado`
+    res.json(respuesta)
+})
 
-module.exports = { obtenerTodosLosUsuarios }
+module.exports = { obtenerTodosLosUsuarios, actualizarUsuario, crearUsuario, borrarUsuario }
