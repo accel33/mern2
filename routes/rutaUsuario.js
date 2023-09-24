@@ -4,8 +4,8 @@ const controller = require('../controllers/usuarioController')
 
 router.route('/')
     .get(controller.obtenerTodosLosUsuarios)
-    .post()
-    .patch()
-    .delete()
+    .post(controller.crearUsuario)
+    .patch(controller.actualizarUsuario)
+    .delete(controller.borrarUsuario)
 
 module.exports = router

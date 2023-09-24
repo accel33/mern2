@@ -16,9 +16,11 @@ const opcionesCors = require('./config/opcionesCors');
 const conectarBaseDeDatos = require('./config/conexionBD');
 const { registrador, registrarEventos } = require('./middleware/registrador');
 const manejadorDeErrores = require('./middleware/manejadorDeErrores');
+const rutaUsuario = require('./routes/rutaUsuario')
 
 const PORT = process.env.PORT || 3000;
 console.log(`Entorno: ${process.env.NODE_ENV}`);
+
 conectarBaseDeDatos();
 
 const rutaEstatica = path.join(__dirname, 'public');
@@ -34,6 +36,7 @@ app.use(registrador);
 // Rutas de la 'Interfaz de Programacion' para Aplicaciones
 app.use('/', express.static(rutaEstatica));
 app.use('/', require(rutaRaiz));
+app.use('/usuarios', rutaUsuario)
 app.all('*', (req, res) => {
     res.status(404);
     if (req.accepts('html')) {

@@ -20,6 +20,20 @@ const personSchema = new Schema(
     }
 );
 
+personSchema.statics.nombreEnUso = async function (nombre) {
+    if (!nombre) throw new Error('Nombre invalido')
+    try {
+        const usuario = await this.findOne({ nombre })
+        if (usuario) return false
+        return true
+    } catch (error) {
+        console.log('error dentro de nombreEnUso', error.message);
+        return false
+    }
+}
+
+personSchema
+
 // Or by using the virtual method as following:
 personSchema.virtual('fullName').get(function () {
     return this.name.first + ' ' + this.name.last;
@@ -33,4 +47,7 @@ const axl = new Person({
     name: { first: 'Axl', last: 'Rose' },
 });
 
-module.exports = Person;
+console.log(axl.fullName);
+console.log(Person.nombreEnUso('Axl'));
+
+// module.exports = Person;

@@ -6,15 +6,16 @@ const bcrypt = require('bcrypt');
 // @desc Obtener todo los Usuarios
 // @ruta GET /usuarios
 // @acceso Privado
-const obtenerTodosLosUsuarios = asyncHandler(fnObtenerUsuarios)
-
-async function fnObtenerUsuarios(req, res) {
-    const usuarios = await Usuario.find().select('-password').lean()
-    if (!usuarios) {
+const obtenerTodosLosUsuarios = asyncHandler(async (req, res) => {
+    // const usuarios = await Usuario.find().select('-password').lean()
+    const usuarios = await Usuario.find().lean()
+    // if (!usuarios?.length)
+    if (!usuarios && !usuarios.length) {
         return res.status(400).json({ message: 'Usuarios no encontrados' })
     }
+    // console.log('Dentro de Usuarios');
     res.json(usuarios)
-}
+})
 
 // @desc Crear un Usuario
 // @ruta POST /usuarios
@@ -31,13 +32,14 @@ const crearUsuario = asyncHandler(async (req, res) => {
         return res.status(409).json({ message: 'Nombre de usuario duplicado' })
     }
     // Encriptar el password
-    const passwordEncriptada = bcrypt.hash(password, 10) // Se graba encriptada en la base de datos
+    const passwordEncriptada = await bcrypt.hash(password, 10) // Se graba encriptada en la base de datos
     const usuarioObjeto = { nombreDeUsuario, password: passwordEncriptada, roles }
 
     // Crear y almacenar el nuevo usuario
     const usuario = await Usuario.create(usuarioObjeto)
     if (usuario) {
-        res.status(201).json({ message: 'Nuevo Usuario ha sido creado' })
+        // res.status(201).json({ message: 'Nuevo Usuario ha sido creado' })
+        res.status(201).json({ message: usuario })
     } else {
         res.status(400).json({ message: 'Data invalida de Usuario ha sido recibida' })
     }
@@ -48,6 +50,8 @@ const crearUsuario = asyncHandler(async (req, res) => {
 // @acceso Privado
 const actualizarUsuario = asyncHandler(async (req, res) => {
     const { id, nombreDeUsuario, password, roles, activo } = req.body
+
+    // Confirmar Datos
     if (!id || !nombreDeUsuario || !password || !roles.length || !Array.isArray(roles) || typeof activo !== 'boolean') {
         return res.status(400).json({ message: 'Todos los campos son requeridos para la solicitud' })
     }
@@ -67,10 +71,10 @@ const actualizarUsuario = asyncHandler(async (req, res) => {
     if (usuarioDuplicado && usuarioDuplicado?._id.toString() !== id) {
         return res.status(409).json({ message: 'Nombre de usuario duplicado' })
     }
-    const encriptacion = bcrypt.hash(password, 10)
+    const encriptacion = await bcrypt.hash(password, 10)
     const usuarioObjeto = { nombreDeUsuario, password: encriptacion, roles, activo }
-    const usuario = await Usuario.updateOne(usuarioObjeto)
-    if (usuario) {
+    const usuarioActualizado = await usuario.updateOne(usuarioObjeto)
+    if (usuarioActualizado) {
         res.status(201).json({ message: 'Usuario actualizado' })
     } else {
         res.status(400).json({ message: 'Data invalida de Usuario ha sido recibida' })
@@ -90,8 +94,13 @@ const borrarUsuario = asyncHandler(async (req, res) => {
     if (!usuario) {
         return res.status(400).json({ message: 'Usuario no encontrado' })
     }
+    // El usuario tiene notas asignadas?
+    const nota = await Nota.findOne({ usuario: id }).lean().exec()
+    if (nota) {
+        return res.status(400).json({ message: 'Usuario tiene notas asignadas' })
+    }
     const resultado = await usuario.deleteOne()
-    const respuesta = `Nombre del usuario ${result.username} con el ID ${result._id} borrado`
+    const respuesta = `Nombre del usuario ${resultado.nombreDeUsuario} con el ID ${resultado._id} borrado`
     res.json(respuesta)
 })
 

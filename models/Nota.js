@@ -36,4 +36,4 @@ const opcionesParaSecuencia = {
 
 notaEsquema.plugin(AutoIncremento, opcionesParaSecuencia);
 
-module.exports = mongoose.Model('Nota', notaEsquema);
+module.exports = mongoose.model('Nota', notaEsquema);
