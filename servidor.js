@@ -16,10 +16,12 @@ const opcionesCors = require('./config/opcionesCors');
 const conectarBaseDeDatos = require('./config/conexionBD');
 const { registrador, registrarEventos } = require('./middleware/registrador');
 const manejadorDeErrores = require('./middleware/manejadorDeErrores');
-const rutaUsuario = require('./routes/rutaUsuario')
+const rutasUsuario = require('./routes/rutaUsuario')
+const rutasNota = require('./routes/noteRoutes')
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 console.log(`Entorno: ${process.env.NODE_ENV}`);
+console.log(process.env.PORT);
 
 conectarBaseDeDatos();
 
@@ -36,7 +38,8 @@ app.use(registrador);
 // Rutas de la 'Interfaz de Programacion' para Aplicaciones
 app.use('/', express.static(rutaEstatica));
 app.use('/', require(rutaRaiz));
-app.use('/usuarios', rutaUsuario)
+app.use('/users', rutasUsuario)
+app.use('/notes', rutasNota)
 app.all('*', (req, res) => {
     res.status(404);
     if (req.accepts('html')) {

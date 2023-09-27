@@ -9,11 +9,12 @@ const bcrypt = require('bcrypt');
 const obtenerTodosLosUsuarios = asyncHandler(async (req, res) => {
     // const usuarios = await Usuario.find().select('-password').lean()
     const usuarios = await Usuario.find().lean()
-    // if (!usuarios?.length)
-    if (!usuarios && !usuarios.length) {
+    if (!usuarios?.length) {
         return res.status(400).json({ message: 'Usuarios no encontrados' })
     }
-    // console.log('Dentro de Usuarios');
+    // if (!usuarios && !usuarios.length) {
+    //     return res.status(400).json({ message: 'Usuarios no encontrados' })
+    // }
     res.json(usuarios)
 })
 
@@ -21,19 +22,19 @@ const obtenerTodosLosUsuarios = asyncHandler(async (req, res) => {
 // @ruta POST /usuarios
 // @acceso Privado
 const crearUsuario = asyncHandler(async (req, res) => {
-    const { nombreDeUsuario, password, roles } = req.body
+    const { username, password, roles } = req.body
     // Confirmar data... no hay ningun elemento en roles[] || roles[] no es un arreglo
-    if (!nombreDeUsuario || !password || !roles.length || !Array.isArray(roles)) {
+    if (!username || !password || !roles.length || !Array.isArray(roles)) {
         return res.status(400).json({ message: 'Todos los campos para los solicitud son requeridos' })
     }
     // Revisar duplicados
-    const duplicado = await Usuario.findOne({ nombreDeUsuario }).lean().exec()
+    const duplicado = await Usuario.findOne({ username }).lean().exec()
     if (duplicado) {
         return res.status(409).json({ message: 'Nombre de usuario duplicado' })
     }
     // Encriptar el password
     const passwordEncriptada = await bcrypt.hash(password, 10) // Se graba encriptada en la base de datos
-    const usuarioObjeto = { nombreDeUsuario, password: passwordEncriptada, roles }
+    const usuarioObjeto = { username, password: passwordEncriptada, roles }
 
     // Crear y almacenar el nuevo usuario
     const usuario = await Usuario.create(usuarioObjeto)
@@ -49,10 +50,10 @@ const crearUsuario = asyncHandler(async (req, res) => {
 // @ruta PATCH /usuarios/:id
 // @acceso Privado
 const actualizarUsuario = asyncHandler(async (req, res) => {
-    const { id, nombreDeUsuario, password, roles, activo } = req.body
+    const { id, username, password, roles, activo } = req.body
 
     // Confirmar Datos
-    if (!id || !nombreDeUsuario || !password || !roles.length || !Array.isArray(roles) || typeof activo !== 'boolean') {
+    if (!id || !username || !password || !roles.length || !Array.isArray(roles) || typeof activo !== 'boolean') {
         return res.status(400).json({ message: 'Todos los campos son requeridos para la solicitud' })
     }
     // Hay que encontrar el Usuario y luego modificarlo
@@ -63,16 +64,16 @@ const actualizarUsuario = asyncHandler(async (req, res) => {
     }
 
     // Una vez el duplicado pero de manera distinta
-    const usuarioDuplicado = await Usuario.findOne({ nombreDeUsuario }).lean().exec()
+    const usuarioDuplicado = await Usuario.findOne({ username }).lean().exec()
 
     // Permitir actualizaciones al usuario original 
-    // El id del usuario con nombreDeUsuario duplicado es igual al id pasado por el cliente
+    // El id del usuario con username duplicado es igual al id pasado por el cliente
     // De no ser igual significa que 
     if (usuarioDuplicado && usuarioDuplicado?._id.toString() !== id) {
         return res.status(409).json({ message: 'Nombre de usuario duplicado' })
     }
     const encriptacion = await bcrypt.hash(password, 10)
-    const usuarioObjeto = { nombreDeUsuario, password: encriptacion, roles, activo }
+    const usuarioObjeto = { username, password: encriptacion, roles, activo }
     const usuarioActualizado = await usuario.updateOne(usuarioObjeto)
     if (usuarioActualizado) {
         res.status(201).json({ message: 'Usuario actualizado' })
@@ -100,7 +101,9 @@ const borrarUsuario = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Usuario tiene notas asignadas' })
     }
     const resultado = await usuario.deleteOne()
-    const respuesta = `Nombre del usuario ${resultado.nombreDeUsuario} con el ID ${resultado._id} borrado`
+    console.log(resultado);
+    console.log(resultado.username);
+    const respuesta = `Nombre del usuario ${resultado.username} con el ID ${resultado._id} borrado`
     res.json(respuesta)
 })
 

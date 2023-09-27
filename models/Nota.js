@@ -3,22 +3,22 @@ const AutoIncremento = require('mongoose-sequence')(mongoose);
 
 const notaEsquema = new mongoose.Schema(
     {
-        usuario: {
+        user: {
             //Hacemos referencia al usuario, porque Notas pertenece a un Usuario
             //Un Usuario puede tener multiples Notas... | Uno a Muchos |
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: 'Usuario',
         },
-        titulo: {
+        title: {
             type: String,
             required: true,
         },
-        descripcion: {
+        text: {
             type: String,
             required: true,
         },
-        completado: {
+        completed: {
             type: Boolean,
             default: false,
         },
@@ -30,7 +30,7 @@ const notaEsquema = new mongoose.Schema(
 
 const opcionesParaSecuencia = {
     inc_field: 'ticket',
-    id: 'numerosTicket',
+    id: 'ticketNums',
     start_seq: 500,
 };
 

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const usuarioEsquema = new mongoose.Schema({
-    nombreDeUsuario: {
+    username: {
         type: String,
         required: true,
     },
@@ -15,7 +15,7 @@ const usuarioEsquema = new mongoose.Schema({
             default: 'Empleado',
         },
     ],
-    activos: {
+    active: {
         type: Boolean,
         default: true,
     },
