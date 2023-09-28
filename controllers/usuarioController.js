@@ -53,7 +53,7 @@ const actualizarUsuario = asyncHandler(async (req, res) => {
     const { id, username, password, roles, activo } = req.body
 
     // Confirmar Datos
-    if (!id || !username || !password || !roles.length || !Array.isArray(roles) || typeof activo !== 'boolean') {
+    if (!id || !username || !roles.length || !Array.isArray(roles) || typeof activo !== 'boolean') {
         return res.status(400).json({ message: 'Todos los campos son requeridos para la solicitud' })
     }
     // Hay que encontrar el Usuario y luego modificarlo
