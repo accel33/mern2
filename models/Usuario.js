@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const usuarioEsquema = new mongoose.Schema({
     username: {
@@ -19,6 +19,6 @@ const usuarioEsquema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
-});
+})
 
-module.exports = mongoose.model('Usuario', usuarioEsquema);
+module.exports = mongoose.model('Usuario', usuarioEsquema)

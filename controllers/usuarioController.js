@@ -1,7 +1,7 @@
 const Usuario = require('../models/Usuario')
 const Nota = require('../models/Nota')
 const asyncHandler = require('express-async-handler')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
 
 // @desc Obtener todo los Usuarios
 // @ruta GET /usuarios
@@ -101,8 +101,8 @@ const borrarUsuario = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Usuario tiene notas asignadas' })
     }
     const resultado = await usuario.deleteOne()
-    console.log(resultado);
-    console.log(resultado.username);
+    console.log(resultado)
+    console.log(resultado.username)
     const respuesta = `Nombre del usuario ${resultado.username} con el ID ${resultado._id} borrado`
     res.json(respuesta)
 })

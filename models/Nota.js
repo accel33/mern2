@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const AutoIncremento = require('mongoose-sequence')(mongoose);
+const mongoose = require('mongoose')
+const AutoIncremento = require('mongoose-sequence')(mongoose)
 
 const notaEsquema = new mongoose.Schema(
     {
@@ -26,14 +26,14 @@ const notaEsquema = new mongoose.Schema(
     {
         timestamps: true,
     }
-);
+)
 
 const opcionesParaSecuencia = {
     inc_field: 'ticket',
     id: 'ticketNums',
     start_seq: 500,
-};
+}
 
-notaEsquema.plugin(AutoIncremento, opcionesParaSecuencia);
+notaEsquema.plugin(AutoIncremento, opcionesParaSecuencia)
 
-module.exports = mongoose.model('Nota', notaEsquema);
+module.exports = mongoose.model('Nota', notaEsquema)
