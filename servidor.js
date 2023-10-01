@@ -11,23 +11,15 @@ const mongoose = require('mongoose')
 const path = require('path')
 
 // Importaciones Locales Personales
-const paginaPrincipal = require('./routes/raiz')
 const opcionesCors = require('./config/opcionesCors')
 const conectarBaseDeDatos = require('./config/conexionBD')
 const { registrador, registrarEventos } = require('./middleware/registrador')
 const manejadorDeErrores = require('./middleware/manejadorDeErrores')
-const rutasUsuario = require('./routes/rutaUsuario')
-const rutasNota = require('./routes/noteRoutes')
 
 const PORT = process.env.PORT || 8000
 console.log(`Entorno: ${process.env.NODE_ENV}`)
-console.log(process.env.PORT)
 
 conectarBaseDeDatos()
-
-const rutaEstatica = path.join(__dirname, 'public')
-const rutaRaiz = path.join(__dirname, 'routes', 'raiz')
-const ruta404 = path.join(__dirname, 'views', '404.html')
 
 // Middlewares o Intermediarios de codigo
 app.use(express.json())
@@ -39,11 +31,13 @@ app.use(registrador)
 app.use('/', express.static('./public'))
 app.use('/', require('./routes/raiz'))
 app.use('/users', require('./routes/rutaUsuario'))
-app.use('/notes', rutasNota)
+app.use('/notes', require('./routes/noteRoutes'))
+app.use('/auth', require('./routes/authRoutes'))
+
 app.all('*', (req, res) => {
     res.status(404)
     if (req.accepts('html')) {
-        res.sendFile(ruta404)
+        res.sendFile('./views/404.html')
     } else if (req.accepts('json')) {
         res.json({ message: '404 No Encontraado' })
     } else {
