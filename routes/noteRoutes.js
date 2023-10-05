@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const notesController = require('../controllers/notesController')
-// const verifyJWT = require('../middleware/verifyJWT')
+const verificarJWT = require('../middleware/verificarJWT')
 
-// router.use(verifyJWT)
+router.use(verificarJWT)
 
 router.route('/')
     .get(notesController.getAllNotes)

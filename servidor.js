@@ -38,7 +38,10 @@ app.use('/auth', require('./routes/authRoutes'))
 app.all('*', (req, res) => {
     res.status(404)
     if (req.accepts('html')) {
-        res.sendFile('./views/404.html')
+        // res.sendFile('./views/404.html') // This don't work because it is not absolute path
+        // __dirname = /Users/{username}/Code/mern2 || This is an absolute path required for .sendFile()
+        console.log(path.join(__dirname, 'views', '404.html'));
+        res.sendFile(path.join(__dirname, 'views', '404.html'))
     } else if (req.accepts('json')) {
         res.json({ message: '404 No Encontraado' })
     } else {
